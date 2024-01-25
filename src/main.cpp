@@ -1,7 +1,7 @@
 /**
- * Program      LovyanBasics with ESP32_2432S028R aka "Cheap Yellow Display (CYD)"
+ * Program      CYD_Basics with ESP32_2432S028R aka "Cheap Yellow Display (CYD)"
  * 
- * Author       2024-01-23 Charles Geiser, most code from Bodmer and Lovyan
+ * Author       2024-01-25 Charles Geiser, most code from Bodmer and Lovyan
  * 
  * Purpose      Shows how to configure the board and use lcd, touchscreen and SD card
  * 

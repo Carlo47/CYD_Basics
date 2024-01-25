@@ -17,12 +17,12 @@ Nevertheless, I made some graphics and saved them to the SD card as RGB565 bitma
 
 | Screen | Bitmap |
 |:------:|:------:|
-| ![img1](images/img1.jpg)   | ![img2](images/RGB_Tiles_16true.png) |
-| ![img3](images/img3.jpg)   | ![img4](images/Rainbow_Stripes_16true.png) |
-| ![img5](images/img5.jpg)   | ![img6](images/Color_Tiles_16true.png) |
-| ![img7](images/img7.jpg)   | ![img8](images/HSV_ColorCircle_16true.png) |
-| ![img9](images/img9.jpg)   | ![img10](images/Color_Gradients_16true.png) |
-| ![img11](images/img11.jpg) | ![img12](images/Mandelbrot_16true.png) |
+| ![img1](images/img1.png)   | ![img2](images/RGB_Tiles_16true.png) |
+| ![img3](images/img3.png)   | ![img4](images/Rainbow_Stripes_16true.png) |
+| ![img5](images/img5.png)   | ![img6](images/Color_Tiles_16true.png) |
+| ![img7](images/img7.png)   | ![img8](images/HSV_ColorCircle_16true.png) |
+| ![img9](images/img9.png)   | ![img10](images/Color_Gradients_16true.png) |
+| ![img11](images/img11.png) | ![img12](images/Mandelbrot_16true.png) |
 
 *Does anyone have an explanation for this unexpected effect?*
 
