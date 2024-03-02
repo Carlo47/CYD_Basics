@@ -28,23 +28,23 @@ public:
       cfg.use_lock = true;                // set to true if transaction lock is used
       cfg.dma_channel = SPI_DMA_CH_AUTO;  // Set DMA channel to use (0=DMA not used / 1=1ch / 2=ch / SPI_DMA_CH_AUTO=auto setting)
                                           // With the ESP-IDF version upgrade, SPI_DMA_CH_AUTO (automatic setting) is recommended for the DMA channel 
-      cfg.pin_sclk = 14;                  // set SPI SCLK pin number SCK
-      cfg.pin_mosi = 13;                  // set MOSI pin number of SPI SDI
-      cfg.pin_miso = 12;                  // set SPI's MISO pin number (-1 = disable) SDO
-      cfg.pin_dc = 2;                     // set SPI D/C pin number (-1 = disable) RS
+      cfg.pin_sclk = TFT_SCLK;            // set SPI SCLK pin number SCK
+      cfg.pin_mosi = TFT_MOSI;            // set MOSI pin number of SPI SDI
+      cfg.pin_miso = TFT_MISO;            // set SPI's MISO pin number (-1 = disable) SDO
+      cfg.pin_dc = TFT_RS;                // set SPI D/C pin number (-1 = disable) RS
       // When using the common SPI bus with the SD card, be sure to set MISO without omitting it.
       _bus_instance.config(cfg);               // reflect the set value to the bus.
       _panel_instance.setBus(&_bus_instance);  // set the bus to the panel.
     }
     {                                       // Set the display panel control.
       auto cfg = _panel_instance.config();  // get structure for display panel settings.
-      cfg.pin_cs = 15;                      // pin number to which CS is connected (-1 = disable)
+      cfg.pin_cs = TFT_CS;                  // pin number to which CS is connected (-1 = disable)
       cfg.pin_rst = -1;                     // pin number to which RST is connected (-1 = disable)
       cfg.pin_busy = -1;                    // pin number to which BUSY is connected (-1 = disable)
-      cfg.memory_width  = 320;              // maximum width supported by driver IC
-      cfg.memory_height = 240;              // maximum height supported by the driver IC
-      cfg.panel_width   = 320;              // actual displayable width
-      cfg.panel_height  = 240;              // actual displayable height
+      cfg.memory_width  = TFT_WIDTH;        // maximum width supported by driver IC
+      cfg.memory_height = TFT_HEIGHT;       // maximum height supported by the driver IC
+      cfg.panel_width   = TFT_WIDTH;        // actual displayable width
+      cfg.panel_height  = TFT_HEIGHT;       // actual displayable height
       cfg.offset_x = 0;                     // amount of panel offset in X direction
       cfg.offset_y = 0;                     // amount of offset in Y direction for the panel
       cfg.offset_rotation  = 5;             // offset of rotation direction value 0~7 (4~7 is upside down)
@@ -59,7 +59,7 @@ public:
     }
     {   // Set up backlight control. (Delete if not needed)
       auto cfg = _light_instance.config();  // get structure for backlight configuration
-      cfg.pin_bl = 21;                      // pin number BL to which the backlight is connected
+      cfg.pin_bl = TFT_BCKL;                // pin number BL to which the backlight is connected
       cfg.invert = false;                   // true to invert backlight brightness
       cfg.freq = 44100;                     // PWM frequency of the backlight
       cfg.pwm_channel = 0;                  // channel number of PWM to use
@@ -73,15 +73,15 @@ public:
       cfg.y_min = 180;          // smallest Y value (raw value) obtained from the touchscreen
       cfg.y_max = 3830;         // maximum Y value from touchscreen (raw value)
       cfg.pin_int = 36;         // pin number where INT is connected, TP IRQ
-      cfg.bus_shared = true;   // set to true if using a common bus with the screen
+      cfg.bus_shared = true;    // set to true if using a common bus with the screen
       cfg.offset_rotation = 0;  // adjust if display and touch orientation do not match, set to 0~7
       // For SPI connection
       cfg.spi_host = VSPI_HOST;  // Select SPI to use (HSPI_HOST or VSPI_HOST)
       cfg.freq = 1000000;        // Set SPI clock
-      cfg.pin_sclk = 25;         // pin number where SCLK is connected, TP CLK
-      cfg.pin_mosi = 32;         // pin number where MOSI is connected, TP DIN
-      cfg.pin_miso = 39;         // pin number where MISO is connected, TP DOUT
-      cfg.pin_cs = 33;           // pin number where CS   is connected, TP CS
+      cfg.pin_sclk = TP_SCLK;    // pin number where SCLK is connected, TP CLK
+      cfg.pin_mosi = TP_MOSI;    // pin number where MOSI is connected, TP DIN
+      cfg.pin_miso = TP_MISO;    // pin number where MISO is connected, TP DOUT
+      cfg.pin_cs = TP_CS;        // pin number where CS   is connected, TP CS
       _touch_instance.config(cfg);
       _panel_instance.setTouch(&_touch_instance);  // set the touch screen to the panel.
     }

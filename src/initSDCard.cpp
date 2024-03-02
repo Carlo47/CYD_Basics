@@ -3,23 +3,29 @@
 
 
 /**
- * Initialize the SD card (Trans Flash) using VSPI (SPI3_HOST) or HSPI_HOST 
- * with standard pins CS = 5, SCK = 18, MISO = 19, MOSI = 23 
- * These pins are determined by the layout of the board ESP32_2432S028
+ * Initialize the SD card (Trans Flash) using VSPI (SPI3_HOST) or HSPI_HOST (SPI2_HOST)
+ * The pins SCK = 18, MISO = 19, MOSI = 23 and CS = 5 are wired onboard
  * Define 
- * SPIClass sdcardSPI(VSPI);
- * or
  * SPIClass sdcardSPI(HSPI);
+ * or
+ * SPIClass sdcardSPI(VSPI);
  * in main.cpp 
  * and pass sdcardSPI as argument to initSDcard()
 */
 void initSDCard(SPIClass &spi)
 {
-    spi.begin(TF_SPI_SCLK, TF_SPI_MISO, TF_SPI_MOSI, TF_CS);
-    if (!SD.begin(TF_CS, spi)) // 👉 Use default frequency of 4MHz
+  // Use custom SPI class
+  spi.begin(TF_SCLK, TF_MISO, TF_MOSI, TF_CS);
+  if (!SD.begin(TF_CS, spi)) // 👉 Use default frequency of 4MHz
+      log_e("==> SD.begin failed!");
+  else
+      log_e("==> done");
+
+/*     // Use default VSPI with pins 5, 18, 19, 23 (CS, SCLK, MISO, MOSI)
+    if (!SD.begin()) // 👉 Use default frequency of 4MHz
         log_e("==> SD.begin failed!");
     else
-        log_e("==> done");
+        log_e("==> done"); */
 }
 
 
@@ -39,12 +45,13 @@ void printSDCardInfo()
   Serial.printf(R"(
 SDCard Info
 -----------
-  type     %s
-  size   %6llu MB
-  total  %6llu MB
-  used   %6llu MB
-  free   %6llu MB
-)", knownCardTypes[cardType], cardSize, cardTotal, cardUsed, cardFree); 
+type     %s
+size   %6llu MB
+total  %6llu MB
+used   %6llu MB
+free   %6llu MB
+)", knownCardTypes[cardType], cardSize, cardTotal, cardUsed, cardFree);
+  Serial.printf("\n");  
 }
 
 

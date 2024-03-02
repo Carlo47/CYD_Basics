@@ -3,7 +3,7 @@ I was interested in the ***Cheap Yellow Display*** or ***CYD*** as [Brian Lough]
 
 After some research on the Internet, however, I soon realized that the board obviously has its peculiarities, not to say design flaws. All the more exciting to experiment with it!
 
-I found the board definition *esp32-2432S028R.json* for PlatformIO [here](https://github.com/rzeldent/platformio-espressif32-sunton/) and put it into my bords folder .platformio\platforms\espressif32\boards
+I found the board definition *esp32-2432S028R.json* for PlatformIO [here](https://github.com/rzeldent/platformio-espressif32-sunton/) and put it with some modifications into my bords folder
 
 A little later I realized that the graphical library [***LovyanGFX***](https://github.com/lovyan03/LovyanGFX) is the better choice for a display with touch function than the usually used library [*TFT_eSPI*](https://github.com/bodmer) from Bodmer.
 

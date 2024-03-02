@@ -40,12 +40,15 @@
 
 using Action   = void(&)(LGFX &lcd);
 using Activity = struct act{const char *name; Action f;};
+GFXfont myFont = fonts::DejaVu18;
+
 
 // These functions are defined in separate files
-extern void calibrateTouch(LGFX &lcd);
-extern void donothing(LGFX &lcd);
+extern void calibrateTouchPad(LGFX &lcd);
+extern void nop(LGFX &lcd);
 extern void framedCrosshair(LGFX &lcd);
-extern void initDisplay(LGFX &lcd, Action greet=donothing);
+extern void grid(LGFX &lcd);
+extern void initDisplay(LGFX &lcd, GFXfont *theFont, Action greet=nop);
 extern void initSDCard(SPIClass &spi);
 extern void lcdInfo(LGFX &lcd);
 extern void listFiles(File dir, int indent=0);
@@ -150,6 +153,18 @@ enum class ROT { PORTRAIT,    LANDSCAPE,   R_PORTRAIT,  R_LANDSCAPE,
 LGFX lcd;
 //SPIClass sdcardSPI(HSPI); // Saved bitmaps on SD card are empty (all white), but touchscreen works
 SPIClass sdcardSPI(VSPI); // Saved bitmaps on SD card are OK, but touchscreen doesn't work
+/**
+ * LCD    SD    TS      Img write   Touch
+ * HSPI   HSPI  HSPI      white      nok 
+ * HSPI   HSPI  VSPI      white       ok
+ * HSPI   VSPI  HSPI      ok         nok
+ * HSPI   VSPI  VSPI      ok         nok
+ * 
+ * VSPI   VSPI  VSPI      black      nok
+ * VSPI   VSPI  HSPI      white       ok
+ * VSPI   HSPI  VSPI      black       ok
+ * VSPI   HSPI  HSPI      ok         nok
+*/
 
 
 /**
@@ -159,21 +174,32 @@ SPIClass sdcardSPI(VSPI); // Saved bitmaps on SD card are OK, but touchscreen do
 */
 void blinkTask(void* arg)
 {
-  PulseGen pulseGenRed(RGB_LED_R, 3000000, 100000, 0);
-  PulseGen pulseGenGreen(RGB_LED_G, 3000000, 100000, 3000000/3);
-  PulseGen pulseGenBlue(RGB_LED_B, 3000000, 100000, 2*3000000/3);
+  PulseGen pulseGenR(RGB_LED_R, 3000000, 100000, 0);
+  PulseGen pulseGenG(RGB_LED_G, 3000000, 100000, 3000000/3);
+  PulseGen pulseGenB(RGB_LED_B, 3000000, 100000, 2*3000000/3);
     // Enable the pulse generators
-  pulseGenRed.on();
-  pulseGenGreen.on();
-  pulseGenBlue.on();
+  pulseGenR.on();
+  pulseGenG.on();
+  pulseGenB.on();
   while (true)
   {
-  // Let the LEDs blink
-  pulseGenRed.loop();
-  pulseGenGreen.loop();
-  pulseGenBlue.loop();
-  vTaskDelay(1 / portTICK_PERIOD_MS);
+    // Let the LEDs blink
+    pulseGenR.loop();
+    pulseGenG.loop();
+    pulseGenB.loop();
+    vTaskDelay(1 / portTICK_PERIOD_MS);
   }
+}
+
+/**
+ * 👉 An empty white image is created when SD card 
+ * and touch are both active. Why are the pixels
+ * not output to the file? 
+*/
+void takeScreenshot(const char *filename)
+{   
+    saveToSD_16bit(lcd, filename, false);
+    Serial.printf("Screenshot saved: %s\n", filename);
 }
 
 
@@ -185,24 +211,29 @@ void setup()
   // red, green and blue alternately every second
   xTaskCreate(blinkTask, "blinkTask", 1024, NULL, 10, NULL);
 
-  //initDisplay(lcd, calibrateTouch);  // Initialize the LCD and ask for calibration
-  initDisplay(lcd, lcdInfo);  // Initialize the LCD and show info
-  initSDCard(sdcardSPI);  // Initialize SD card 👉after👈 display
+  //initDisplay(lcd,  &myFont, calibrateTouchPad);  // Initialize the LCD and ask for calibration
+  initDisplay(lcd, &myFont, lcdInfo);  // Initialize the LCD and show info
+  initSDCard(sdcardSPI);      // Initialize SD card 👉after👈 display
   printSDCardInfo();
   listFiles(SD.open("/"));
 
   // Read a jpg color swatch and save it as rgrb565-bitmap
   // 👉 The colors ar not correct! 
-  lcd.drawJpgFile("/sd/colorSwatch.jpg", 0,0) ? log_e("file opened") : log_e("file not found");
-  saveToSD_16bit(lcd, "/colorSwatch_16true.bmp", true);
-  saveToSD_16bit(lcd, "/colorSwatch_16false.bmp", false);
+    lcd.drawJpgFile("/sd/saved/jpg/colorSwatch.jpg", 0,0) ? log_e("file opened") : log_e("file not found");
+    takeScreenshot("/SCREENSHOTS/sreen00.bmp");
+    delay(5000);
+    lcd.drawBmpFile("/sd/saved/bmp/dodeka.bmp", 0,0) ? log_e("file opened") : log_e("file not found");
+    takeScreenshot("/SCREENSHOTS/sreen01.bmp");
+    delay(5000);
+    grid(lcd);
+    takeScreenshot("/SCREENSHOTS/sreen02.bmp");
+    lcd.drawBmpFile("/sd/SCREENSHOTS/sreen00.bmp", 0,0)  ? log_e("file opened") : log_e("file not found");
   
   // Check the conversion of RGB to HSV color space
   uint8_t r = 132;  uint8_t g = 206;  uint8_t b = 239; 
   uint32_t h,s,v;
   rgb2hsv(r,g,b, h,s,v);
   Serial.printf("R=%d, G=%d, B=%d --> h=%d, S=%d, V=%d", r,g,b, h,s,v);
-
   log_e("==> done");
 }
 
@@ -213,7 +244,7 @@ void loop()
   if (lcd.getTouch(&x, &y))               // ❗ Touchscreen doesn't work
     Serial.printf("x=%d y=%d\n", x, y);
 
-  // Show all defined graphical patterns
+/*   // Show all defined graphical patterns
   for( int i = 0; i < nbrActivities; i++)
   {
     Serial.printf("%s\n", activity[i].name);
@@ -222,7 +253,6 @@ void loop()
     snprintf(buf, 64, "/%s_16true.bmp", activity[i].name);
     saveToSD_16bit(lcd, buf, true);
     delay (3000);
-  }
-
-  log_e("==> done");
+  } */
+  delay(500);
 }
