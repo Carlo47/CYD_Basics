@@ -1,7 +1,7 @@
 /**
  * Program      CYD_Basics with ESP32_2432S028R aka "Cheap Yellow Display (CYD)"
  * 
- * Author       2024-01-25 Charles Geiser, most code from Bodmer and Lovyan
+ * Author       2024-03-07 Charles Geiser, most code from Bodmer and Lovyan
  * 
  * Purpose      Shows how to configure the board and use lcd, touchscreen and SD card
  * 
@@ -37,6 +37,7 @@
 #include "lgfx_ESP32_2432S028.h"
 #include <SD.h>
 #include "PulseGen.h"
+#include "Turtle.h"
 
 using Action   = void(&)(LGFX &lcd);
 using Activity = struct act{const char *name; Action f;};
@@ -53,6 +54,7 @@ extern void initSDCard(SPIClass &spi);
 extern void lcdInfo(LGFX &lcd);
 extern void listFiles(File dir, int indent=0);
 extern void printSDCardInfo();
+extern void printSystemInfo();
 extern void rgb2hsv(uint8_t r, uint8_t g, uint8_t b, uint32_t &h, uint32_t &s, uint32_t &v);
 extern bool saveToSD_16bit(LGFX &lcd, const char *filename, bool swapBytes=true);
 
@@ -71,6 +73,20 @@ extern void rgbFrame(LGFX &lcd);
 extern void roundRectangles(LGFX &lcd);
 extern void sierpinskyTriangle(LGFX &lcd);
 extern void triangles(LGFX &lcd);
+extern void spiral(Turtle &t, float angle, float step, float delta);
+extern void koch(Turtle &t, int n, float step);
+extern void cCurve(Turtle &t, int n, int step);
+extern void dragonCurve(Turtle &t, int n, int sign, float step);
+
+extern void sevenSpirals(LGFX &lcd);
+extern void fiveKochSnowflakes(LGFX &lcd);
+extern void cCurves1(LGFX &lcd);
+extern void cCurves2(LGFX &lcd);
+extern void cCurves3(LGFX &lcd);
+extern void dragonCurves1(LGFX &lcd);
+extern void dragonCurves2(LGFX &lcd);
+extern void dragonCurves3(LGFX &lcd);
+
 
 // All defined TFT-Colors
 int color[] = {  TFT_BLACK,       TFT_RED,       TFT_MAROON,    TFT_BROWN,
@@ -84,31 +100,31 @@ int nbrOfColors = sizeof(color) / sizeof(color[0]);
 
 // These RGB representations of the TFT-Colors are not used in this example program
 uint8_t colorsRGB[][3] =
-{ // R   G   B      Name                H    S      V
-  {  0,  0,  0}, // TFT_BLACK           0,   0.0,   0.0
-  {255,  0,  0}, // TFT_RED             0, 100.0  100.0
-  {123,  0,  0}, // TFT_MAROON          0, 100.0   48.2
-  {156, 77,  0}, // TFT_BROWN          30, 100.0   61.2
-  {255,182,  0}, // TFT_ORANGE         43, 100.0  100.0
-  {255,215,  0}, // TFT_GOLD           51, 100.0  100.0
-  {255,255,  0}, // TFT_YELLOW         60, 100.0  100.0
+{ // R   G   B      Name                H     S      V
+  {  0,  0,  0}, // TFT_BLACK           0    0.0    0.0
+  {255,  0,  0}, // TFT_RED             0  100.0  100.0
+  {123,  0,  0}, // TFT_MAROON          0  100.0   48.2
+  {156, 77,  0}, // TFT_BROWN          30  100.0   61.2
+  {255,182,  0}, // TFT_ORANGE         43  100.0  100.0
+  {255,215,  0}, // TFT_GOLD           51  100.0  100.0
+  {255,255,  0}, // TFT_YELLOW         60  100.0  100.0
   {123,125,  0}, // TFT_OLIVE          61  100.0   49.0
-  {181,255,  0}, // TFT_GREENYELLOW    77, 100.0  100.0
-  {  0,255,  0}, // TFT_GREEN         120, 100.0  100.0
-  {  0,125,  0}, // TFT_DARGREEN      120, 100.0   49.0
-  {123,125,123}, // TFT_DARKGREY      120,   1.6   49.0
-  {  0,125,123}, // TFT_DARKCYAN      179, 100.0   49.0
-  {  0,255,255}, // TFT_CYAN          180, 100.0  100.0
-  {132,206,239}, // TFT_SKYBLUE       199,  44.8   93.7
-  {  0,  0,255}, // TFT_BLUE          240, 100.0  100.0
-  {  0,  0,123}, // TFT_NAVY          240, 100.0,  48.2
-  {148, 40,230}, //TFT_VIOLET         274,  82.6   90.2  
-  {255,  0,255}, // TFT_MAGENTA       300, 100.0  100.0
-  {123,  0,123}, // TFT_PURPLE        300, 100.0   48.2
-  {214,210,214}, // TFT_LIGHTGREY     300,   1.9   83.9      
-  {197,194,197}, // TFT_SILVER        300,   1.5   77.3
-  {255,194,206}, // TFT_PINK          348,  23.9  100.0
-  {255,255,255}, // TFT_WHITE           0,   0.0  100.0 
+  {181,255,  0}, // TFT_GREENYELLOW    77  100.0  100.0
+  {  0,255,  0}, // TFT_GREEN         120  100.0  100.0
+  {  0,125,  0}, // TFT_DARGREEN      120  100.0   49.0
+  {123,125,123}, // TFT_DARKGREY      120    1.6   49.0
+  {  0,125,123}, // TFT_DARKCYAN      179  100.0   49.0
+  {  0,255,255}, // TFT_CYAN          180  100.0  100.0
+  {132,206,239}, // TFT_SKYBLUE       199   44.8   93.7
+  {  0,  0,255}, // TFT_BLUE          240  100.0  100.0
+  {  0,  0,123}, // TFT_NAVY          240  100.0   48.2
+  {148, 40,230}, // TFT_VIOLET        274   82.6   90.2  
+  {255,  0,255}, // TFT_MAGENTA       300  100.0  100.0
+  {123,  0,123}, // TFT_PURPLE        300  100.0   48.2
+  {214,210,214}, // TFT_LIGHTGREY     300    1.9   83.9      
+  {197,194,197}, // TFT_SILVER        300    1.5   77.3
+  {255,194,206}, // TFT_PINK          348   23.9  100.0
+  {255,255,255}, // TFT_WHITE           0    0.0  100.0 
 };
 constexpr int nbrOfColorsRGB = sizeof(colorsRGB)/sizeof(colorsRGB[0]);
 
@@ -138,7 +154,15 @@ Activity activity[] = {
                         {"Random_Dots",      randomDots},
                         {"Barnsley_Fern",    barnsleyFern}, 
                         {"Mandelbrot",       mandelbrot},
-                        {"Sierpinsky",       sierpinskyTriangle}, 
+                        {"Sierpinsky",       sierpinskyTriangle},
+                        {"Spirals",          sevenSpirals},
+                        {"Snowflakes",       fiveKochSnowflakes},
+                        {"C_Curves1",        cCurves1},
+                        {"C_Curves2",        cCurves2},
+                        {"C_Curves3",        cCurves3},
+                        {"Dragon_Curves1",   dragonCurves1},
+                        {"Dragon_Curves2",   dragonCurves2},
+                        {"Dragon_Curves3",   dragonCurves3}, 
                       };
 constexpr int nbrActivities = sizeof(activity) / sizeof(activity[0]);
 
@@ -151,6 +175,7 @@ enum class ROT { PORTRAIT,    LANDSCAPE,   R_PORTRAIT,  R_LANDSCAPE,
                };
 
 LGFX lcd;
+
 //SPIClass sdcardSPI(HSPI); // Saved bitmaps on SD card are empty (all white), but touchscreen works
 SPIClass sdcardSPI(VSPI); // Saved bitmaps on SD card are OK, but touchscreen doesn't work
 /**
@@ -191,6 +216,7 @@ void blinkTask(void* arg)
   }
 }
 
+
 /**
  * 👉 An empty white image is created when SD card 
  * and touch are both active. Why are the pixels
@@ -206,18 +232,18 @@ void takeScreenshot(const char *filename)
 void setup() 
 {
   Serial.begin(115200);
-
+  Serial.printf("stack: %d\n", uxTaskGetStackHighWaterMark(NULL));
   // Starts the blinking task, which causes the RGB LED to flash 
   // red, green and blue alternately every second
   xTaskCreate(blinkTask, "blinkTask", 1024, NULL, 10, NULL);
-
+  printSystemInfo();
   //initDisplay(lcd,  &myFont, calibrateTouchPad);  // Initialize the LCD and ask for calibration
   initDisplay(lcd, &myFont, lcdInfo);  // Initialize the LCD and show info
   initSDCard(sdcardSPI);      // Initialize SD card 👉after👈 display
   printSDCardInfo();
   listFiles(SD.open("/"));
-
-  // Read a jpg color swatch and save it as rgrb565-bitmap
+/* 
+  // Read a jpg color swatch and save it as rgb565-bitmap
   // 👉 The colors ar not correct! 
     lcd.drawJpgFile("/sd/saved/jpg/colorSwatch.jpg", 0,0) ? log_e("file opened") : log_e("file not found");
     takeScreenshot("/SCREENSHOTS/sreen00.bmp");
@@ -228,12 +254,12 @@ void setup()
     grid(lcd);
     takeScreenshot("/SCREENSHOTS/sreen02.bmp");
     lcd.drawBmpFile("/sd/SCREENSHOTS/sreen00.bmp", 0,0)  ? log_e("file opened") : log_e("file not found");
-  
+   */
   // Check the conversion of RGB to HSV color space
   uint8_t r = 132;  uint8_t g = 206;  uint8_t b = 239; 
   uint32_t h,s,v;
   rgb2hsv(r,g,b, h,s,v);
-  Serial.printf("R=%d, G=%d, B=%d --> h=%d, S=%d, V=%d", r,g,b, h,s,v);
+  Serial.printf("R=%d, G=%d, B=%d --> h=%d, S=%d, V=%d\n", r,g,b, h,s,v);
   log_e("==> done");
 }
 
@@ -244,7 +270,7 @@ void loop()
   if (lcd.getTouch(&x, &y))               // ❗ Touchscreen doesn't work
     Serial.printf("x=%d y=%d\n", x, y);
 
-/*   // Show all defined graphical patterns
+  // Show all defined graphical patterns
   for( int i = 0; i < nbrActivities; i++)
   {
     Serial.printf("%s\n", activity[i].name);
@@ -253,6 +279,5 @@ void loop()
     snprintf(buf, 64, "/%s_16true.bmp", activity[i].name);
     saveToSD_16bit(lcd, buf, true);
     delay (3000);
-  } */
-  delay(500);
+  }
 }

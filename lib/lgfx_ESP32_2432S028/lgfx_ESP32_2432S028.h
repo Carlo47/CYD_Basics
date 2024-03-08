@@ -9,6 +9,7 @@
  *  
  * Reference  https://github.com/lovyan03/LovyanGFX/blob/master/examples/HowToUse/2_user_setting
 */
+#pragma once
 
 class LGFX : public lgfx::LGFX_Device {
   lgfx::Panel_ILI9341 _panel_instance;
