@@ -15,8 +15,8 @@ class Turtle
     static constexpr float RAD = 3.14159265359 / 180.0;
 
     public:
-        Turtle(LGFX &lcd, float heading, int x0, int y0, int penColor=TFT_WHITE) : 
-            _lcd(lcd), _heading(heading), _x(x0), _y(y0), _penColor(penColor)
+        Turtle(LGFX &lcd, int x0, int y0, float heading, int penColor=TFT_WHITE) : 
+            _lcd(lcd), _x(x0), _y(y0), _heading(heading), _penColor(penColor)
         { lcd.fillScreen(_screenColor); }
 
         LGFX  &_lcd;

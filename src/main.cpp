@@ -1,7 +1,7 @@
 /**
  * Program      CYD_Basics with ESP32_2432S028R aka "Cheap Yellow Display (CYD)"
  * 
- * Author       2024-03-07 Charles Geiser, most code from Bodmer and Lovyan
+ * Author       2024-03-10 Charles Geiser, most code from Bodmer and Lovyan
  * 
  * Purpose      Shows how to configure the board and use lcd, touchscreen and SD card
  * 
@@ -71,13 +71,10 @@ extern void rectangles(LGFX &lcd);
 extern void rgbTiles(LGFX &lcd);
 extern void rgbFrame(LGFX &lcd);
 extern void roundRectangles(LGFX &lcd);
-extern void sierpinskyTriangle(LGFX &lcd);
+extern void sierpinskiTriangle(LGFX &lcd);
 extern void triangles(LGFX &lcd);
-extern void spiral(Turtle &t, float angle, float step, float delta);
-extern void koch(Turtle &t, int n, float step);
-extern void cCurve(Turtle &t, int n, int step);
-extern void dragonCurve(Turtle &t, int n, int sign, float step);
 
+// Recursive turtle graphics
 extern void sevenSpirals(LGFX &lcd);
 extern void fiveKochSnowflakes(LGFX &lcd);
 extern void cCurves1(LGFX &lcd);
@@ -86,6 +83,11 @@ extern void cCurves3(LGFX &lcd);
 extern void dragonCurves1(LGFX &lcd);
 extern void dragonCurves2(LGFX &lcd);
 extern void dragonCurves3(LGFX &lcd);
+extern void sierpinskiTriangles01(LGFX &lcd);
+extern void sierpinskiTriangles23(LGFX &lcd);
+extern void sierpinskiTriangles45(LGFX &lcd);
+extern void shamrocks02(LGFX &lcd);
+extern void shamrocks34(LGFX &lcd);
 
 
 // All defined TFT-Colors
@@ -154,7 +156,7 @@ Activity activity[] = {
                         {"Random_Dots",      randomDots},
                         {"Barnsley_Fern",    barnsleyFern}, 
                         {"Mandelbrot",       mandelbrot},
-                        {"Sierpinsky",       sierpinskyTriangle},
+                        {"Sierpinski",       sierpinskiTriangle},
                         {"Spirals",          sevenSpirals},
                         {"Snowflakes",       fiveKochSnowflakes},
                         {"C_Curves1",        cCurves1},
@@ -162,7 +164,12 @@ Activity activity[] = {
                         {"C_Curves3",        cCurves3},
                         {"Dragon_Curves1",   dragonCurves1},
                         {"Dragon_Curves2",   dragonCurves2},
-                        {"Dragon_Curves3",   dragonCurves3}, 
+                        {"Dragon_Curves3",   dragonCurves3},
+                        {"Sierpinski_01",    sierpinskiTriangles01},
+                        {"Sierpinski_23",    sierpinskiTriangles23},
+                        {"Sierpinski_45",    sierpinskiTriangles45},
+                        {"Shamrocks_02",     shamrocks02},
+                        {"Shamrocks_34",     shamrocks34},
                       };
 constexpr int nbrActivities = sizeof(activity) / sizeof(activity[0]);
 

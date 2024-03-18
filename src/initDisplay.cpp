@@ -98,6 +98,19 @@ text size Y    = %4.2f
   Serial.printf("\n");
 }
 
+
+
+void gammaCorrection(LGFX &lcd)
+{
+  constexpr uint8_t ILI9341_GMCTRP1 = 0xE0;
+  constexpr uint8_t ILI9341_GMCTRN1 = 0xE1;
+  lcd.writecommand(ILI9341_GMCTRP1); //Gamma curve selected
+  lcd.writedata(2);
+  delay(120);
+  lcd.writecommand(ILI9341_GMCTRN1); //Gamma curve selected
+  lcd.writedata(1);
+}
+
 GFXfont defaultFont = fonts::DejaVu18;
 
 /**
@@ -109,6 +122,7 @@ GFXfont defaultFont = fonts::DejaVu18;
 void initDisplay(LGFX &lcd, GFXfont *theFont=&defaultFont, Action greet=nop)
   {
     lcd.begin() ? log_i("--> done") : log_i("--> failed");
+    //gammaCorrection(lcd);
     lcd.fillScreen(TFT_BLACK);
     lcd.setTextSize(1.0);
     lcd.setTextDatum(lgfx::textdatum::TL_DATUM);

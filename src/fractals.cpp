@@ -111,7 +111,7 @@ void spirals(Turtle &t)
 
 void sevenSpirals(LGFX &lcd)
 {
-  Turtle t(lcd, 0.0, lcd.width()/2, lcd.height()/2, TFT_RED);
+  Turtle t(lcd, lcd.width()/2, lcd.height()/2, 0.0, TFT_RED);
   t.screenColor(TFT_YELLOW);
   spirals(t);
 }
@@ -131,7 +131,7 @@ void kochSnowflakes01234(Turtle &t)
 
 void fiveKochSnowflakes(LGFX &lcd)
 {
-  Turtle t(lcd, 0.0, lcd.width()/2, lcd.height()/2);
+  Turtle t(lcd, lcd.width()/2, lcd.height()/2, 0.0);
   kochSnowflakes01234(t);
 }
 
@@ -150,7 +150,7 @@ void cCurves0123(Turtle &t)
 
 void cCurves1(LGFX &lcd)
 {
-  Turtle t(lcd, 0.0, lcd.width()/2, lcd.height()/2);
+  Turtle t(lcd, lcd.width()/2, lcd.height()/2, 0.0);
   cCurves0123(t);
 }
 
@@ -168,7 +168,7 @@ void cCurves456(Turtle &t)
 
 void cCurves2(LGFX &lcd)
 {
-  Turtle t(lcd, 0.0, lcd.width()/2, lcd.height()/2);
+  Turtle t(lcd, lcd.width()/2, lcd.height()/2, 0.0);
   cCurves456(t);
 }
 
@@ -186,7 +186,7 @@ void cCurves789(Turtle &t)
 
 void cCurves3(LGFX &lcd)
 {
-  Turtle t(lcd, 0.0, lcd.width()/2, lcd.height()/2);
+  Turtle t(lcd, lcd.width()/2, lcd.height()/2, 0.0);
   cCurves789(t);
 }
 
@@ -205,7 +205,7 @@ void dragonCurves0123(Turtle &t)
 
 void dragonCurves1(LGFX &lcd)
 {
-  Turtle t(lcd, 0.0, lcd.width()/2, lcd.height()/2);
+  Turtle t(lcd, lcd.width()/2, lcd.height()/2, 0.0);
   dragonCurves0123(t);
 }
 
@@ -223,7 +223,7 @@ void dragonCurves456(Turtle &t)
 
 void dragonCurves2(LGFX &lcd)
 {
-  Turtle t(lcd, 0.0, lcd.width()/2, lcd.height()/2);
+  Turtle t(lcd, lcd.width()/2, lcd.height()/2, 0.0);
   dragonCurves456(t);
 }
 
@@ -241,8 +241,147 @@ void dragonCurves789(Turtle &t)
 
 void dragonCurves3(LGFX &lcd)
 {
-  Turtle t(lcd, 0.0, lcd.width()/2, lcd.height()/2);
+  Turtle t(lcd, lcd.width()/2, lcd.height()/2, 0.0);
   dragonCurves789(t);
+}
+
+
+/**
+ * Recursive Sierpinski Triangle
+ * 
+ * Recipe: Draw a triangle. Draw another triangle with
+ * half the side length in each of the three corners and 
+ * repeat the process as often as you like. 
+*/
+void sierpinskiRecursive(Turtle &t, int n, float step)
+{
+  if (n == 0)
+  {
+    for (int i = 0; i < 3; i++)
+    {
+      t.forward(step);
+      t.right(120);
+    }
+  }
+  else
+  {
+    int s = step/2;
+    t.penColor(TFT_RED);
+    sierpinskiRecursive(t, n-1, s); 
+    t.penUp(); t.forward(s); t.penDown();
+    t.penColor(TFT_GREEN);
+    sierpinskiRecursive(t, n-1, s);
+    t.penUp(); 
+    t.right(120); t.forward(s); t.left(120);
+    t.penDown();
+    t.penColor(TFT_BLUE);
+    sierpinskiRecursive(t, n-1, s); 
+    t.penUp();
+    t.left(120); t.forward(s); t.right(120);
+    t.penDown();
+  }
+}
+
+void sierpinskiTriangles01(LGFX &lcd)
+{
+  Turtle t(lcd, 45, 5, 0.0);
+  sierpinskiRecursive(t, 0, 170); lcd.drawChar(48, 5, 15);
+  t.home(45, 165, 0.0);
+  sierpinskiRecursive(t, 1, 170); lcd.drawChar(49, 5, 175);
+}
+
+
+void sierpinskiTriangles23(LGFX &lcd)
+{
+  Turtle t(lcd, 45, 5, 0.0);
+  sierpinskiRecursive(t, 2, 170); lcd.drawChar(50, 5, 15);
+  t.home(45, 165, 0.0);
+  sierpinskiRecursive(t, 3, 170); lcd.drawChar(51, 5, 175);
+}
+
+
+void sierpinskiTriangles45(LGFX &lcd)
+{
+  Turtle t(lcd, 45, 5, 0.0);
+  sierpinskiRecursive(t, 4, 170); lcd.drawChar(52, 5, 15);
+  t.home(45, 165, 0.0);
+  sierpinskiRecursive(t, 5, 170); lcd.drawChar(53, 5, 175);
+}
+
+
+/**
+ * The bracket ] is the basic pattern for the pyramid
+*/
+void bracket(Turtle &t, float step)
+{
+  int ms = 15; // We slow down the turtle so that we can follow it better with our eyes 
+  t.forward(step); delay(ms);
+  t.left(90.0);
+  t.forward(3 * step); delay(ms);
+  t.left(90.0);
+  t.forward(step); delay(ms);
+  t.left(90.0);
+}
+
+/**
+ * A pyramid is a quarter of a shamrock
+*/
+void pyramid(Turtle &t, int n, float step)
+{
+  if (n == 0)
+  {
+      bracket(t, step);
+  }
+  else
+  {
+    pyramid(t, n-1, step/3);
+    pyramid(t, n-1, step/3);
+    t.right(90); t.forward(step/(3*n));
+    pyramid(t, n-1, step/3);
+    pyramid(t, n-1, step/3);      
+  }
+}
+
+
+/**
+ * Form a shamrock from 4 pyramids
+ * The turtle draws the shamrock in one continuous pass 
+*/
+void shamrock(Turtle &t, int order, float step)
+{
+  
+  for (int i = 0; i < 4; i++)
+  {
+    pyramid(t, order, step);
+  }
+}
+
+
+/**
+ * Draw the shamrocks of order 0, 1 and 2
+*/
+void shamrocks02(LGFX &lcd)
+{
+  Turtle t(lcd, 25, 5, 90.0);
+  lcd.drawChar(48, 5, 15); shamrock(t, 0, 30); 
+  t.home(150, 5, 90.0);
+  lcd.drawChar(49, 130, 15); shamrock(t, 1, 30); 
+  t.home(25, 110, 90.0);
+  lcd.drawChar(50, 5, 120); shamrock(t, 2, 120); 
+}
+
+
+/**
+ * Draw the shamrocks of order 3 and 4
+*/
+void shamrocks34(LGFX &lcd)
+{
+  Turtle t(lcd, 5, 25, 90.0);
+  lcd.drawChar(51, 5, 15); shamrock(t, 3, 180);
+  delay(3000);
+  t.clear(); 
+  t.home(5, 25, 90.0);
+  lcd.drawChar(52, 5, 15); shamrock(t, 4, 243);
 }
 
 
@@ -341,14 +480,14 @@ void mandelbrot(LGFX &lcd)
 
 /**
  * Draws the fractal known as "Sierpinskys Triangle"
- * Method: 
+ * Recipe: 
  * 1) Place 3 corner points randomly
  * 2) Chose another point randomly, e.g P(20, 20)
  * 3) Select a corner randomly and mark the middle between the corner and point P
  * 4) The middle becomes the new point P
  * 5) Repeat from 3) 
 */
-void sierpinskyTriangle(LGFX &lcd)
+void sierpinskiTriangle(LGFX &lcd)
 {
   int ecke[3][2] = {{0,0}, {lcd.width(),0}, {lcd.width()/2,lcd.height()}};
   int farbe[] = {TFT_RED, TFT_BLUE, TFT_GREEN};
