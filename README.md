@@ -15,15 +15,20 @@ Operating the SD card or touchscreen on the SPI_HOST HSPI or VSPI or vice versa 
 
 Nevertheless, I made some graphics and saved them to the SD card as RGB565 bitmaps and converted them to png with XnView, so that i can show them in this README. To my great disappointment, the colors in the saved bitmaps did not match those on the screen, as these pictures show:
 
-| Screen | Bitmap |
-|:------:|:------:|
-| ![img1](images/img1.png)   | ![img2](images/RGB_Tiles_16true.png) |
-| ![img3](images/img3.png)   | ![img4](images/Rainbow_Stripes_16true.png) |
-| ![img5](images/img5.png)   | ![img6](images/Color_Tiles_16true.png) |
-| ![img7](images/img7.png)   | ![img8](images/HSV_ColorCircle_16true.png) |
-| ![img9](images/img9.png)   | ![img10](images/Color_Gradients_16true.png) |
-| ![img11](images/img11.png) | ![img12](images/Mandelbrot_16true.png) |
+| Screen Photo | Bitmap RGB | Bitmap BRG |
+|:------------:|:----------:|:----------:|
+| ![img01](images/Photo/00_RGB_Tiles_Photo.png)   | ![img02](images/Screenshots/colors_saved_as_RGB/PNG/00_RGB_Tiles_16.png) | ![img03](images/Screenshots/colors_swapped_RGB_to_BRG/PNG/00_RGB_Tiles_16.png) |
+| ![img11](images/Photo/01_Rainbow_Stripes_Photo.png)   | ![img12](images/Screenshots/colors_saved_as_RGB/PNG/01_Rainbow_Stripes_16.png) | ![img13](images/Screenshots/colors_swapped_RGB_to_BRG/PNG/01_Rainbow_Stripes_16.png) |
+| ![img21](images/Photo/02_Color_Tiles_Photo.png)   | ![img22](images/Screenshots/colors_saved_as_RGB/PNG/02_Color_Tiles_16.png) | ![img23](images/Screenshots/colors_swapped_RGB_to_BRG/PNG/02_Color_Tiles_16.png) |
+| ![img31](images/Photo/08_HSV_Colorcircle_Photo.png)   | ![img31](images/Screenshots/colors_saved_as_RGB/PNG/08_HSV_ColorCircle_16.png) | ![img31](images/Screenshots/colors_swapped_RGB_to_BRG/PNG/08_HSV_ColorCircle_16.png) |
+| ![img41](images/Photo/03_Color_Gradients_Photo.png)   | ![img42](images/Screenshots/colors_saved_as_RGB/PNG/03_Color_Gradients_16.png) | ![img43](images/Screenshots/colors_swapped_RGB_to_BRG/PNG/03_Color_Gradients_16.png) |
+| ![img51](images/Photo/11_Mandelbrot_Photo.png) | ![img52](images/Screenshots/colors_saved_as_RGB/PNG/11_Mandelbrot_16.png) | ![img52](images/Screenshots/colors_swapped_RGB_to_BRG/PNG/11_Mandelbrot_16.png) |
 
 *Does anyone have an explanation for this unexpected effect?*
+
+In the meantime I have tried all possible color swaps with XnView and found that obviously a conversion from RGB to BRG produces the correct colors. However, saving in this format is not possible with LovyanGFX.
+
+Manual conversion with XnView is necessary because LovyanGFX only allows RGB565 or BGR565 to be saved.
+
 
 As a little bonus, I let the RGB LEDs flash alternately at second intervals, 🔴red, 🟢green, 🔵blue, ... This flashing runs in the second core of the ESP32, independently of the graphics routines running in the main loop.

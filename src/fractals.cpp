@@ -372,15 +372,21 @@ void shamrocks02(LGFX &lcd)
 
 
 /**
- * Draw the shamrocks of order 3 and 4
+ * Draw the shamrocks of order 3
 */
-void shamrocks34(LGFX &lcd)
+void shamrocks3(LGFX &lcd)
 {
   Turtle t(lcd, 5, 25, 90.0);
   lcd.drawChar(51, 5, 15); shamrock(t, 3, 180);
-  delay(3000);
-  t.clear(); 
-  t.home(5, 25, 90.0);
+}
+
+
+/**
+ * Draw the shamrocks of order 4
+*/
+void shamrocks4(LGFX &lcd)
+{
+  Turtle t(lcd, 5, 25, 90.0);
   lcd.drawChar(52, 5, 15); shamrock(t, 4, 243);
 }
 

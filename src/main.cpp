@@ -32,6 +32,8 @@
  *              https://www.youtube.com/watch?app=desktop&v=6JCLHIXXVus  (fixing the audio issues)
  *              https://chrishewett.com/blog/true-rgb565-colour-picker/
 */
+#define LGFX_ESP32_2432S028
+
 #include <Arduino.h>
 #include <LovyanGFX.hpp>
 #include "lgfx_ESP32_2432S028.h"
@@ -56,7 +58,10 @@ extern void listFiles(File dir, int indent=0);
 extern void printSDCardInfo();
 extern void printSystemInfo();
 extern void rgb2hsv(uint8_t r, uint8_t g, uint8_t b, uint32_t &h, uint32_t &s, uint32_t &v);
-extern bool saveToSD_16bit(LGFX &lcd, const char *filename, bool swapBytes=true);
+
+extern bool saveBmpToSD_16bit(LGFX &lcd, const char *filename);
+extern bool saveBmpToSD_24bit(LGFX &lcd, const char *filename);
+
 
 // Graphical examples defined in graphicPatterns.cpp
 extern void barnsleyFern(LGFX &lcd);
@@ -87,7 +92,8 @@ extern void sierpinskiTriangles01(LGFX &lcd);
 extern void sierpinskiTriangles23(LGFX &lcd);
 extern void sierpinskiTriangles45(LGFX &lcd);
 extern void shamrocks02(LGFX &lcd);
-extern void shamrocks34(LGFX &lcd);
+extern void shamrocks3(LGFX &lcd);
+extern void shamrocks4(LGFX &lcd);
 
 
 // All defined TFT-Colors
@@ -169,7 +175,8 @@ Activity activity[] = {
                         {"Sierpinski_23",    sierpinskiTriangles23},
                         {"Sierpinski_45",    sierpinskiTriangles45},
                         {"Shamrocks_02",     shamrocks02},
-                        {"Shamrocks_34",     shamrocks34},
+                        {"Shamrocks_3",     shamrocks3},
+                        {"Shamrocks_4",     shamrocks4},
                       };
 constexpr int nbrActivities = sizeof(activity) / sizeof(activity[0]);
 
@@ -183,8 +190,8 @@ enum class ROT { PORTRAIT,    LANDSCAPE,   R_PORTRAIT,  R_LANDSCAPE,
 
 LGFX lcd;
 
-//SPIClass sdcardSPI(HSPI); // Saved bitmaps on SD card are empty (all white), but touchscreen works
-SPIClass sdcardSPI(VSPI); // Saved bitmaps on SD card are OK, but touchscreen doesn't work
+SPIClass sdcardSPI(VSPI); // Saved bitmaps on SD card are empty (all white), but touchscreen works
+//SPIClass sdcardSPI(VSPI); // Saved bitmaps on SD card are OK, but touchscreen doesn't work
 /**
  * LCD    SD    TS      Img write   Touch
  * HSPI   HSPI  HSPI      white      nok 
@@ -231,7 +238,7 @@ void blinkTask(void* arg)
 */
 void takeScreenshot(const char *filename)
 {   
-    saveToSD_16bit(lcd, filename, false);
+    saveBmpToSD_16bit(lcd, filename);
     Serial.printf("Screenshot saved: %s\n", filename);
 }
 
@@ -283,8 +290,10 @@ void loop()
     Serial.printf("%s\n", activity[i].name);
     activity[i].f(lcd);
     char buf[64];
-    snprintf(buf, 64, "/%s_16true.bmp", activity[i].name);
-    saveToSD_16bit(lcd, buf, true);
+    snprintf(buf, 64, "/%02d_%s_16.bmp", i, activity[i].name);
+    saveBmpToSD_16bit(lcd, buf);
+    snprintf(buf, 64, "/%02d_%s_24.bmp", i, activity[i].name);
+    saveBmpToSD_24bit(lcd, buf);
     delay (3000);
   }
 }
