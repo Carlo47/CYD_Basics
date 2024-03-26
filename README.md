@@ -20,7 +20,7 @@ Nevertheless, I made some graphics and saved them to the SD card as RGB565 bitma
 | ![img01](images/Photo/00_RGB_Tiles_Photo.png)   | ![img02](images/Screenshots/colors_saved_as_RGB/PNG/00_RGB_Tiles_16.png) | ![img03](images/Screenshots/colors_swapped_RGB_to_BRG/PNG/00_RGB_Tiles_16.png) |
 | ![img11](images/Photo/01_Rainbow_Stripes_Photo.png)   | ![img12](images/Screenshots/colors_saved_as_RGB/PNG/01_Rainbow_Stripes_16.png) | ![img13](images/Screenshots/colors_swapped_RGB_to_BRG/PNG/01_Rainbow_Stripes_16.png) |
 | ![img21](images/Photo/02_Color_Tiles_Photo.png)   | ![img22](images/Screenshots/colors_saved_as_RGB/PNG/02_Color_Tiles_16.png) | ![img23](images/Screenshots/colors_swapped_RGB_to_BRG/PNG/02_Color_Tiles_16.png) |
-| ![img31](images/Photo/08_HSV_Colorcircle_Photo.png)   | ![img31](images/Screenshots/colors_saved_as_RGB/PNG/08_HSV_ColorCircle_16.png) | ![img31](images/Screenshots/colors_swapped_RGB_to_BRG/PNG/08_HSV_ColorCircle_16.png) |
+| ![img31](images/Photo/08_HSV_ColorCircle_Photo.png)   | ![img31](images/Screenshots/colors_saved_as_RGB/PNG/08_HSV_ColorCircle_16.png) | ![img31](images/Screenshots/colors_swapped_RGB_to_BRG/PNG/08_HSV_ColorCircle_16.png) |
 | ![img41](images/Photo/03_Color_Gradients_Photo.png)   | ![img42](images/Screenshots/colors_saved_as_RGB/PNG/03_Color_Gradients_16.png) | ![img43](images/Screenshots/colors_swapped_RGB_to_BRG/PNG/03_Color_Gradients_16.png) |
 | ![img51](images/Photo/11_Mandelbrot_Photo.png) | ![img52](images/Screenshots/colors_saved_as_RGB/PNG/11_Mandelbrot_16.png) | ![img52](images/Screenshots/colors_swapped_RGB_to_BRG/PNG/11_Mandelbrot_16.png) |
 
