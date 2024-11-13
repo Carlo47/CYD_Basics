@@ -31,4 +31,4 @@ In the meantime I have tried all possible color swaps with XnView and found that
 Manual conversion with XnView is necessary because LovyanGFX only allows RGB565 or BGR565 to be saved.
 
 
-As a little bonus, I let the RGB LEDs flash alternately at second intervals, 🔴red, 🟢green, 🔵blue, ... This flashing runs in the second core of the ESP32, independently of the graphics routines running in the main loop.
+As a little bonus, I let the RGB LEDs flash alternately at second intervals, 🔴red, 🟢green, 🔵blue, ... This flashing runs as separate task, independently of the graphics routines running in the main loop.
